@@ -47,6 +47,7 @@ Display.monitor:         eDP1
 Display.resolution:      1920x1200
 Display.brightness:      60
 Display.wallpaper:       /path/to/your/wallpaper
+Display.lockscreen:      /path/to/your/lockscreen_bg
 ```
 
 Finally, put .functions in your home directory. This file contains an important function to get your own configuration of displayctl from the X resource database.
@@ -91,5 +92,5 @@ displayctl -h
 ```
  
 ## TODOS
-* Separated desktop wallpaper and lockscreen wallpaper.
+* ~~separated desktop wallpaper and lockscreen wallpaper.~~
 * Any else...?
