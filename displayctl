@@ -1,0 +1,211 @@
+#!/usr/bin/env bash
+# displayctl
+#
+# Personal script for setting resolution and wallpaper.
+
+# Include ~/.functions to use xrdb_get_record().
+# We use xrdb_get_record() to query xrdb and get the specified record.
+source ~/.functions
+
+OUTPUT=`xrdb_get_record Display.monitor`
+RESOLUTION=`xrdb_get_record Display.resolution`
+BRIGHTNESS=`xrdb_get_record Display.brightness`
+
+WALLPAPER=`xrdb_get_record Display.wallpaper`
+logo=/home/decimate/.config/dotfiles/res/logo.png
+tmpbg=/tmp/bg.png
+
+function print_usage()
+{
+    echo "Usage: $0 <argument>"
+    echo "-d --display   - Set the screen size and brightness."
+    echo "-w --wall      - Set the desktop wallpaper."
+    echo "-l --lock      - Lock the screen."
+    echo "-h --help      - Display this message."
+    echo "--clear-cache  - Clear previous lockscreen cache."
+}
+
+function scale_image()
+{
+    # $1: The image to scale to your screen resolution.
+    ffmpeg -i $1 -y -vf scale=$RESOLUTION $tmpbg -loglevel quiet
+}
+
+function dim_image()
+{
+    # $1: The image to apply dim effect to.
+    scale_image $1
+    convert $tmpbg -fill black -colorize 35% $tmpbg
+}
+
+function process_image()
+{
+    # $1: The image to blur.
+    # $2: Should the image be blurred.
+    blur_ratio="0:0"
+    if [ "$2" == "blur" ]; then blur_ratio="5:7"; fi
+    
+    scale_image $1
+    ffmpeg \
+        -i $tmpbg -video_size $RESOLUTION -y -i $logo \
+        -filter_complex "boxblur=$blur_ratio,overlay=(main_w-overlay_w)/2:(main_h-overlay_h)/2" \
+        -vframes 1 $tmpbg \
+        -loglevel quiet
+}
+
+function scrot()
+{
+    # $1: Where the screenshot will be saved to.
+    ffmpeg \
+        -f x11grab -video_size $RESOLUTION -y -i $DISPLAY \
+        -vframes 1 $1 \
+        -loglevel quiet
+}
+
+
+function clear_cache()
+{
+    if [ -f $tmpbg ]; then rm $tmpbg; fi
+}
+
+function set_display()
+{
+    # Set the size of the outputs for current screen.
+    xrandr 1>/dev/null && xrandr --output $OUTPUT --mode $RESOLUTION
+    # Adjust backlight brightness.
+    xbacklight -set $BRIGHTNESS
+}
+
+function set_wallpaper()
+{
+    # Copy wallpaper to a temporary location.
+    # We might blur it later depending on user's decision.
+    if [ "$1" != "$tmpbg" ]; then cp $1 $tmpbg; fi
+    if [ "$2" == "blur" ]; then process_image $tmpbg blur; fi
+    feh --bg-fill $tmpbg
+}
+
+function lock()
+{
+    # $1: Lockscreen image path
+    letterEnteredColor=d23c3dff
+    letterRemovedColor=d23c3dff
+    passwordCorrect=00000000
+    passwordIncorrect=d23c3dff
+    background=00000000
+    foreground=ffffffff
+    i3lock \
+	-n -i "$1" \
+	--timepos="x-90:h-ch+30" \
+	--datepos="tx+24:ty+25" \
+	--clock --datestr "Type password to unlock..." \
+	--insidecolor=$background --ringcolor=$foreground --line-uses-inside \
+	--keyhlcolor=$letterEnteredColor --bshlcolor=$letterRemovedColor --separatorcolor=$background \
+	--insidevercolor=$passwordCorrect --insidewrongcolor=$passwordIncorrect \
+	--ringvercolor=$foreground --ringwrongcolor=$foreground --indpos="x+280:h-70" \
+	--radius=20 --ring-width=4 --veriftext="" --wrongtext="" \
+	--textcolor="$foreground" --timecolor="$foreground" --datecolor="$foreground"
+}
+
+
+case "$1" in
+    "")
+        set_display
+        set_wallpaper $WALLPAPER
+        ;;
+        
+    -d | --display)
+        set_display
+        ;;
+        
+    -w | --wall)
+        # Backup previous image cache, and restore it later.
+        if [ -f $tmpbg ]; then cp $tmpbg $tmpbg.old; fi
+        
+        case "$2" in
+            "")
+                set_wallpaper $WALLPAPER
+                ;;
+                
+            -b | --blur)
+                case "$3" in
+                    "")
+                        set_wallpaper $WALLPAPER blur
+                        ;;
+                    -d | --dim)
+                        dim_image $WALLPAPER
+                        set_wallpaper $tmpbg blur
+                        ;;
+                esac
+                ;;
+                
+            -d | --dim)
+                case "$3" in
+                    "")
+                        dim_image $WALLPAPER
+                        set_wallpaper $tmpbg
+                        ;;
+                    -b | --blur)
+                        dim_image $WALLPAPER
+                        set_wallpaper $tmpbg blur
+                        ;;
+                esac
+                ;;
+        esac
+        
+        # Restore previous image cache.
+        if [ -f $tmpbg.old ]; then rm $tmpbg; mv $tmpbg.old $tmpbg; fi
+        ;;
+        
+    -l | --lock)
+        if [ -f $tmpbg ] && [ "$2" != "-s" ] && [ "$2" != "--scrot" ]; then
+            echo "Using previous lockscreen cache."
+            echo "Run displayctl --clear-cache before applying new effects to your lockscreen."
+        else
+            case "$2" in
+                "")
+                    process_image $WALLPAPER
+                    ;;
+                    
+                -b | --blur)
+                    case "$3" in
+                        "")
+                            process_image $WALLPAPER blur
+                            ;;
+                        -d | --dim)
+                            process_image $WALLPAPER blur
+                            dim_image $tmpbg
+                            ;;
+                    esac
+                    ;;
+                    
+                -d | --dim)
+                    case "$3" in
+                        "")
+                            dim_image $WALLPAPER
+                            ;;
+                        -b | --blur)
+                            dim_image $WALLPAPER
+                            process_image $tmpbg blur
+                            ;;
+                    esac
+                    ;;
+                    
+                -s | --scrot)
+                    scrot $tmpbg
+                    process_image $tmpbg blur
+                    ;;
+            esac
+        fi
+        lock $tmpbg
+        ;;
+        
+    --clear-cache)
+        clear_cache
+        echo "The lockscreen cache has been cleared."
+        ;;
+        
+    -h | --help)
+        print_usage
+        ;;
+esac
