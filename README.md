@@ -6,7 +6,7 @@ This script is written with the intention of **dealing with display resolution, 
 The configuration of displayctl (like the path to your daily wallpaper, default display resolution, default screen brightness...etc) are stored in the X resource database, so that **these values can be managed within a single file**, instead of being scattered across numerous scripts/configs.
  
 ## What It Does
-![example](https://github.com/aesophor/displayctl/scrot/example.png)
+![example](/scrot/example.png)
  
 * Set display resolution and brightness.
  
@@ -29,15 +29,13 @@ displayctl
 and then the resolution will go back to the original.
  
 * Now everything related to the display can be managed within a single file (~/.Xresources).
-![config](https://github.com/aesophor/displayctl/scrot/config.png)
+![config](/scrot/config.png)
  
 ## Screenshots
-![dim](https://github.com/aesophor/displayctl/scrot/dim.png)
- 
-![blur](https://github.com/aesophor/displayctl/scrot/blur.png)
- 
-![scrot](https://github.com/aesophor/displayctl/scrot/scrot.png)
- 
+![dim](/scrot/dim.png)
+![blur](/scrot/blur.png)
+![scrot](/scrot/scrot.png)
+
 ## Dependencies
 * i3lock-color - i3lock fork with additional features.
 * imagemagick  - Apply dim effect to images.
