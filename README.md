@@ -25,7 +25,8 @@ The configuration of displayctl (like the path to your daily wallpaper, default 
   * the cache is at /tmp/bg.png
   * use **displayctl --clear-cache** or simply **displayctl** if you want to apply new effects
  
-
+* Now everything related to the display can be managed within a single file (~/.Xresources).
+ 
 * Sometimes when I quit games like Skyrim, the resolution did not revert back correctly, and I have to run xrandr...
  
 But now I only need to type
@@ -33,9 +34,7 @@ But now I only need to type
 displayctl
 ```
 and then the resolution will go back to the original.
- 
-* Now everything related to the display can be managed within a single file (~/.Xresources).
- 
+
 
 ## Screenshots
 ![dim](/scrot/dim.png)
