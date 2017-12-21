@@ -16,6 +16,7 @@ LOCKSCREEN=`xrdb_get_record Display.lockscreen`
 logo=/home/decimate/.config/dotfiles/res/logo.png
 tmpbg=/tmp/bg.png
 
+
 function print_usage()
 {
     echo "Usage: $0 <argument>"
@@ -63,6 +64,20 @@ function scrot()
         -loglevel quiet
 }
 
+function draw_rectangle()
+{
+    # $1: The image to draw an rectangle on.
+    rectangles=" "
+    SR=$(xrandr --query | grep ' connected' | grep -o '[0-9][0-9]*x[0-9][0-9]*[^ ]*')
+    for RES in $SR; do
+        SRA=(${RES//[x+]/ })
+        CX=$((${SRA[2]} + 25))
+        CY=$((${SRA[1]} - 30))
+        rectangles+="rectangle $CX,$CY $((CX+300)),$((CY-80)) "
+    done
+    convert $1 -draw "fill black fill-opacity 0.6 $rectangles" $1
+}
+
 
 function clear_cache()
 {
@@ -89,10 +104,10 @@ function set_wallpaper()
 function lock()
 {
     # $1: Lockscreen image path
-    letterEnteredColor=d23c3dff
-    letterRemovedColor=d23c3dff
+    letterEnteredColor=ba5e5fff
+    letterRemovedColor=ba5e5fff
     passwordCorrect=00000000
-    passwordIncorrect=d23c3dff
+    passwordIncorrect=ba5e5fff
     background=00000000
     foreground=ffffffff
     i3lock \
@@ -165,6 +180,7 @@ case "$1" in
             echo "Using previous lockscreen cache."
             echo "Run displayctl --clear-cache before applying new effects to your lockscreen."
         else
+            echo -n "Generating lockscreen cache, please wait... "
             case "$2" in
                 "")
                     process_image $LOCKSCREEN
@@ -199,6 +215,8 @@ case "$1" in
                     process_image $tmpbg blur
                     ;;
             esac
+            echo "[Complete]"
+            draw_rectangle $tmpbg
         fi
         lock $tmpbg
         ;;

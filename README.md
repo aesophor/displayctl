@@ -1,8 +1,9 @@
 # displayctl
 A handy utility to handle various works related to the display.
  
-This script is written with the intention of **dealing with display resolution, brightness, wallpaper, and lockscreen using just a single tool**. You may apply several effects (e.g., blur, dim, or both...etc) to your wallpaper and lockscreen. It also provides a caching mechanism to let you lock your screen faster. 
-Its configuration (like the path to your daily wallpaper, default display resolution, default screen brightness...etc) are stored in the X resource database, so that **these values can be managed within a single file**, instead of being scattered across numerous scripts/configs.
+Inspired by [betterlockscreen](https://github.com/pavanjadhaw/betterlockscreen) by [pavanjadhaw](https://github.com/pavanjadhaw/), this script is written with the intention of **dealing with display resolution, brightness, wallpaper, and lockscreen using just a single utility**. You may apply several effects (e.g., blur, dim, or both...etc) to your wallpaper and lockscreen. It provides a caching mechanism to let you lock your screen faster. 
+Different from betterlockscreen, displayctl does not generate cache for every lockscreen style. Instead, it only generate cache for the one that you need. The rectangle drawing part is taken from his script.
+In Addition, the configuration of displayctl (like the path to your daily wallpaper, default display resolution, default screen brightness...etc) are stored in the X resource database, so that **these values can be managed within a single file**, instead of being scattered across numerous scripts/configs.
 
 ## What It Does
 * Set display resolution(xrandr) and brightness(xbacklight).
@@ -17,8 +18,11 @@ Its configuration (like the path to your daily wallpaper, default display resolu
 * Provides a caching mechanism to make lockscreen faster.
   * **displayctl will use the cache for lockscreen automatically (if exists)**
   * the cache is at /tmp/bg.png
-  * use **--clear-cache** if you want to apply new effects.
- 
+  * use **--clear-cache** if you want to apply new effects
+
+## Screenshots
+Currently empty here. I'll fill this up eventually.
+
 ## Dependencies
 * i3lock-color - i3lock fork with additional features.
 * imagemagick  - Apply dim effect to images.
@@ -92,5 +96,5 @@ displayctl -h
 ```
  
 ## TODOS
-* ~~separated desktop wallpaper and lockscreen wallpaper.~~
-* Any else...?
+- [x] ~~separated desktop wallpaper and lockscreen wallpaper.~~
+Any else...?
