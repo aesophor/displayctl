@@ -119,7 +119,7 @@ function lock()
 	--keyhlcolor=$letterEnteredColor --bshlcolor=$letterRemovedColor --separatorcolor=$background \
 	--insidevercolor=$passwordCorrect --insidewrongcolor=$passwordIncorrect \
 	--ringvercolor=$foreground --ringwrongcolor=$foreground --indpos="x+280:h-70" \
-	--radius=20 --ring-width=4 --veriftext="" --wrongtext="" \
+	--radius=15 --ring-width=8 --veriftext="" --wrongtext="" \
 	--textcolor="$foreground" --timecolor="$foreground" --datecolor="$foreground"
 }
 

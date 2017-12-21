@@ -1,29 +1,43 @@
 # displayctl
 A handy utility to handle various works related to the display.
  
-Inspired by [betterlockscreen](https://github.com/pavanjadhaw/betterlockscreen) by [pavanjadhaw](https://github.com/pavanjadhaw/), this script is written with the intention of **dealing with display resolution, brightness, wallpaper, and lockscreen using just a single utility**. You may apply several effects (e.g., blur, dim, or both...etc) to your wallpaper and lockscreen. It provides a caching mechanism to let you lock your screen faster. 
+This script is written with the intention of **dealing with display resolution, brightness, wallpaper, and lockscreen using just a single utility**. You may apply several effects (e.g., blur, dim, or both...etc) to your wallpaper and lockscreen. It provides a caching mechanism to let you lock your screen faster. 
  
-Different from betterlockscreen, displayctl does not generate cache for every lockscreen style. Instead, it only generate cache for the one that you need. The rectangle drawing part is taken from his script.
-In Addition, the configuration of displayctl (like the path to your daily wallpaper, default display resolution, default screen brightness...etc) are stored in the X resource database, so that **these values can be managed within a single file**, instead of being scattered across numerous scripts/configs.
-
+The configuration of displayctl (like the path to your daily wallpaper, default display resolution, default screen brightness...etc) are stored in the X resource database, so that **these values can be managed within a single file**, instead of being scattered across numerous scripts/configs.
+ 
 ## What It Does
-* Set display resolution(xrandr) and brightness(xbacklight).
+![example](https://github.com/aesophor/displayctl/scrot/example.png)
  
-* Set desktop wallpaper(feh) / lockscreen(i3lock-color) with the following effects:
+* Set display resolution and brightness.
+ 
+* Set desktop wallpaper / lockscreen with the following effects:
   * regular
   * blur
   * dim
   * blur + dim
   * blurry screenshot (for lockscreen only)
  
-* Provides a caching mechanism to make lockscreen faster.
-  * **displayctl will use the cache for lockscreen automatically (if exists)**
+* Caching - to make lockscreen faster.
+  * **displayctl uses the cache for lockscreen automatically (if exists)**
   * the cache is at /tmp/bg.png
-  * use **--clear-cache** if you want to apply new effects
-
+  * use **displayctl --clear-cache** or simply **displayctl** if you want to apply new effects
+ 
+* Sometimes when I quit Skyrim, the resolution did not revert back correctly. Now I only need to type
+```
+displayctl
+```
+and then the resolution will go back to the original.
+ 
+* Now everything related to the display can be managed within a single file (~/.Xresources).
+![config](https://github.com/aesophor/displayctl/scrot/config.png)
+ 
 ## Screenshots
-Currently empty here. I'll fill this up eventually.
-
+![dim](https://github.com/aesophor/displayctl/scrot/dim.png)
+ 
+![blur](https://github.com/aesophor/displayctl/scrot/blur.png)
+ 
+![scrot](https://github.com/aesophor/displayctl/scrot/scrot.png)
+ 
 ## Dependencies
 * i3lock-color - i3lock fork with additional features.
 * imagemagick  - Apply dim effect to images.
