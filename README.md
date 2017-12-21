@@ -55,7 +55,8 @@ and then the resolution will go back to the original.
  
 
 ## Manual Installation
-git clone this repo and then take the script, or...
+* Getting the script.
+either git clone this repo and take the script, or...
 ```
 git clone https://github.com/aesophor/displayctl
 ```
@@ -66,18 +67,34 @@ wget https://raw.githubusercontent.com/aesophor/displayctl/master/displayctl
 chmod +x displayctl
 ```
  
-Secondly copy .displayctlrc from cloned repo which is displayctl config file to the root of your home directory.
-And add these lines to your .Xresources (or .Xdefaults, which depends on your setting).
+***
+* Preparing configuration files.
+copy displayctlrc from cloned repo which is displayctl config file to ~/.x
+```
+cp displayctlrc ~/.x/.
+```
  
+![config](/scrot/config.png)
+ 
+ 
+And we have to **include ~/.x/displayctlrc in .Xresources** (or .Xdefaults, which depends on your setting).
  
 ```
 ! displayctl configuration file
-#include ".displayctlrc"
+#include "/home/<username>/.x/displayctlrc"
 ```
  
-[IMPORTANT] Modify .displayctlrc according to your needs.
+It should look something like this...
+
+![configs](/scrot/configs.png)
+
+[IMPORTANT] 
+Replace <username> with your own username.
+Modify .displayctlrc according to your needs.
 Use xrandr to find your display monitor and resolution.
  
+***
+* Reload .Xresources
 Also you may need to reload your .Xresources. Type this in terminal.
 ```
 xrdb -merge ~/.Xresources
@@ -90,7 +107,7 @@ Also make sure to include the following line in your .zshrc (or whatever shell c
 source ~/.functions
 ```
 
-Then you may logout current user session, restart X, and enjoy!
+Then you may logout current X session, restart X, and enjoy!
  
 ## Usage
 Some examples
