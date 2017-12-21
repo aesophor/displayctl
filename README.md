@@ -53,9 +53,11 @@ and then the resolution will go back to the original.
 * xbacklight   - Setting display brightness.
 * xrdb         - Getting configuration from X server resource database.
  
-
+ 
+ 
 ## Manual Installation
 * Getting the script.
+ 
 either git clone this repo and take the script, or...
 ```
 git clone https://github.com/aesophor/displayctl
@@ -67,14 +69,17 @@ wget https://raw.githubusercontent.com/aesophor/displayctl/master/displayctl
 chmod +x displayctl
 ```
  
+ 
 ***
 * Preparing configuration files.
+ 
 copy displayctlrc from cloned repo which is displayctl config file to ~/.x
 ```
 cp displayctlrc ~/.x/.
 ```
  
 ![config](/scrot/config.png)
+ 
  
  
 And we have to **include ~/.x/displayctlrc in .Xresources** (or .Xdefaults, which depends on your setting).
@@ -93,6 +98,8 @@ Replace <username> with your own username.
 Modify .displayctlrc according to your needs.
 Use xrandr to find your display monitor and resolution.
  
+
+
 ***
 * Reload .Xresources
 Also you may need to reload your .Xresources. Type this in terminal.
