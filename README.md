@@ -55,7 +55,7 @@ and then the resolution will go back to the original.
  
  
 ## Manual Installation
-* Getting the script.
+# Getting the script.
  
 either git clone this repo and take the script, or...
 ```
@@ -70,7 +70,7 @@ chmod +x displayctl
  
  
 ***
-* Preparing configuration files.
+# Preparing configuration files.
  
 copy displayctlrc to ~/.x
 ```
@@ -96,7 +96,7 @@ Use xrandr to find your display monitor and resolution.
  
 
 ***
-* Reload .Xresources
+# Reload .Xresources
  
 Also you may need to reload your .Xresources. Type this in terminal.
 ```
