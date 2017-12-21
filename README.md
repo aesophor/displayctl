@@ -2,10 +2,13 @@
 A handy utility to handle various works related to the display.
  
 This script is written with the intention of **dealing with display resolution, brightness, wallpaper, and lockscreen using just a single utility**. You may apply several effects (e.g., blur, dim, or both...etc) to your wallpaper and lockscreen. It provides a caching mechanism to let you lock your screen faster. 
+ 
 ![example](/scrot/example.png)
  
 The configuration of displayctl (like the path to your daily wallpaper, default display resolution, default screen brightness...etc) are stored in the X resource database, so that **these values can be managed within a single file**, instead of being scattered across numerous scripts/configs.
+ 
 ![config](/scrot/config.png)
+ 
  
 ## What It Does 
 * Set display resolution and brightness.
@@ -33,12 +36,14 @@ and then the resolution will go back to the original.
  
 * Now everything related to the display can be managed within a single file (~/.Xresources).
  
+
 ## Screenshots
 ![dim](/scrot/dim.png)
  
 ![blur](/scrot/blur.png)
  
 ![scrot](/scrot/scrot.png)
+ 
 
 ## Dependencies
 * i3lock-color - i3lock fork with additional features.
@@ -48,6 +53,7 @@ and then the resolution will go back to the original.
 * xbacklight   - Setting display brightness.
 * xrdb         - Getting configuration from X server resource database.
  
+
 ## Manual Installation
 git clone this repo and then take the script, or...
 ```
@@ -112,5 +118,6 @@ displayctl --clear-cache
 displayctl -h
 ```
  
+
 ## TODOS
-- [x] ~~separated desktop wallpaper and lockscreen wallpaper.~~
+- [x] separated desktop wallpaper and lockscreen wallpaper.
