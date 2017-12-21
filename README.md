@@ -65,18 +65,25 @@ download the script directly with wget.
 wget https://raw.githubusercontent.com/aesophor/displayctl/master/displayctl
 chmod +x displayctl
 ```
-
-Secondly, add the following lines to your .Xresources (or .Xdefaults, which depends on your setting). You may need to modify them a bit.
+ 
+Secondly copy .displayctlrc from cloned repo which is displayctl config file to the root of your home directory.
+And add these lines to your .Xresources (or .Xdefaults, which depends on your setting).
+ 
+ 
 ```
-! Displayctl
-! ============================================================
-Display.monitor:         eDP1
-Display.resolution:      1920x1200
-Display.brightness:      60
-Display.wallpaper:       /path/to/your/wallpaper
-Display.lockscreen:      /path/to/your/lockscreen_bg
+! displayctl configuration file
+#include ".displayctlrc"
 ```
-
+ 
+[IMPORTANT] Modify .displayctlrc according to your needs.
+Use xrandr to find your display monitor and resolution.
+ 
+Also you may need to reload your .Xresources. Type this in terminal.
+```
+xrdb -merge ~/.Xresources
+```
+ 
+ 
 Finally, put .functions in your home directory. This file contains an important function to get your own configuration of displayctl from the X resource database.
 Also make sure to include the following line in your .zshrc (or whatever shell config that you are using). This script needs it!
 ```
