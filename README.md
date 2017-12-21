@@ -98,4 +98,3 @@ displayctl -h
  
 ## TODOS
 - [x] ~~separated desktop wallpaper and lockscreen wallpaper.~~
-Any else...?
