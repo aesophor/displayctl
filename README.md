@@ -68,7 +68,7 @@ wget https://raw.githubusercontent.com/aesophor/displayctl/master/displayctl
 chmod +x displayctl
 ```
  
- 
+***
 ### Preparing configuration files.
  
 copy displayctlrc to ~/.x
