@@ -2,8 +2,10 @@
 A handy utility to handle various works related to the display.
  
 This script is written with the intention of **dealing with display resolution, brightness, wallpaper, and lockscreen using just a single utility**. You may apply several effects (e.g., blur, dim, or both...etc) to your wallpaper and lockscreen. It provides a caching mechanism to let you lock your screen faster. 
+![example](/scrot/example.png)
  
 The configuration of displayctl (like the path to your daily wallpaper, default display resolution, default screen brightness...etc) are stored in the X resource database, so that **these values can be managed within a single file**, instead of being scattered across numerous scripts/configs.
+![config](/scrot/config.png)
  
 ## What It Does 
 * Set display resolution and brightness.
@@ -21,18 +23,15 @@ The configuration of displayctl (like the path to your daily wallpaper, default 
   * use **displayctl --clear-cache** or simply **displayctl** if you want to apply new effects
  
 
-* Sometimes when I quit Skyrim, the resolution did not revert back correctly. Now I only need to type
+* Sometimes when I quit games like Skyrim, the resolution did not revert back correctly, and I have to run xrandr...
+ 
+But now I only need to type
 ```
 displayctl
 ```
 and then the resolution will go back to the original.
  
- 
 * Now everything related to the display can be managed within a single file (~/.Xresources).
- 
- ![example](/scrot/example.png)
- 
- ![config](/scrot/config.png)
  
 ## Screenshots
 ![dim](/scrot/dim.png)
