@@ -73,13 +73,10 @@ chmod +x displayctl
 ***
 * Preparing configuration files.
  
-copy displayctlrc from cloned repo which is displayctl config file to ~/.x
+copy displayctlrc to ~/.x
 ```
 cp displayctlrc ~/.x/.
 ```
- 
-![config](/scrot/config.png)
- 
  
  
 And we have to **include ~/.x/displayctlrc in .Xresources** (or .Xdefaults, which depends on your setting).
@@ -93,15 +90,15 @@ It should look something like this...
 
 ![configs](/scrot/configs.png)
 
-[IMPORTANT] 
-Replace <username> with your own username.
+**[IMPORTANT]** Replace <username> with your own username.
+ 
 Modify .displayctlrc according to your needs.
 Use xrandr to find your display monitor and resolution.
  
 
-
 ***
 * Reload .Xresources
+ 
 Also you may need to reload your .Xresources. Type this in terminal.
 ```
 xrdb -merge ~/.Xresources
