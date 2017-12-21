@@ -29,11 +29,14 @@ displayctl
 and then the resolution will go back to the original.
  
 * Now everything related to the display can be managed within a single file (~/.Xresources).
+ 
 ![config](/scrot/config.png)
  
 ## Screenshots
 ![dim](/scrot/dim.png)
+ 
 ![blur](/scrot/blur.png)
+ 
 ![scrot](/scrot/scrot.png)
 
 ## Dependencies
