@@ -5,9 +5,7 @@ This script is written with the intention of **dealing with display resolution, 
  
 The configuration of displayctl (like the path to your daily wallpaper, default display resolution, default screen brightness...etc) are stored in the X resource database, so that **these values can be managed within a single file**, instead of being scattered across numerous scripts/configs.
  
-## What It Does
-![example](/scrot/example.png)
- 
+## What It Does 
 * Set display resolution and brightness.
  
 * Set desktop wallpaper / lockscreen with the following effects:
@@ -22,15 +20,19 @@ The configuration of displayctl (like the path to your daily wallpaper, default 
   * the cache is at /tmp/bg.png
   * use **displayctl --clear-cache** or simply **displayctl** if you want to apply new effects
  
+
 * Sometimes when I quit Skyrim, the resolution did not revert back correctly. Now I only need to type
 ```
 displayctl
 ```
 and then the resolution will go back to the original.
  
+ 
 * Now everything related to the display can be managed within a single file (~/.Xresources).
  
-![config](/scrot/config.png)
+ ![example](/scrot/example.png)
+ 
+ ![config](/scrot/config.png)
  
 ## Screenshots
 ![dim](/scrot/dim.png)
