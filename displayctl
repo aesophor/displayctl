@@ -55,7 +55,8 @@ function process_image()
     ffmpeg \
         -i $tmpbg -video_size $RESOLUTION -y -i $logo \
         -filter_complex "boxblur=$blur_ratio,overlay=(main_w-overlay_w)/2:(main_h-overlay_h)/2" \
-        -vframes 1 $tmpbg
+        -vframes 1 $tmpbg \
+        -loglevel quiet
 }
 
 function scrot()
