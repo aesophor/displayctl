@@ -13,24 +13,28 @@ BRIGHTNESS=`xrdb_get_record Display.brightness`
 
 WALLPAPER=`xrdb_get_record Display.wallpaper`
 LOCKSCREEN=`xrdb_get_record Display.lockscreen`
-logo=/home/decimate/.config/dotfiles/res/logo.png
+logo=./res/logo.png
 tmpbg=/tmp/bg.png
 
 
 function print_usage()
 {
     echo "Usage: $0 <argument>"
-    echo "-d --display   - Set the screen size and brightness."
-    echo "-w --wall      - Set the desktop wallpaper."
-    echo "-l --lock      - Lock the screen."
-    echo "-h --help      - Display this message."
-    echo "--clear-cache  - Clear previous lockscreen cache."
+    echo "-d --display      - Set the screen size and brightness."
+    echo "-w --wall         - Set the desktop wallpaper."
+    echo "-l --lock         - Lock the screen."
+    echo "-h --help         - Display this message."
+    echo "-u --update       - Update X resources database."
+    echo "-c --clear-cache  - Clear previous lockscreen cache."
 }
 
 function scale_image()
 {
     # $1: The image to scale to your screen resolution.
-    ffmpeg -i $1 -y -vf scale=-1:`echo $RESOLUTION | cut -d "x" -f 2` $tmpbg -loglevel quiet
+    width=`echo $RESOLUTION | cut -d "x" -f 1`
+    height=`echo $RESOLUTION | cut -d "x" -f 2`
+
+    ffmpeg -i $1 -y -vf scale=$width:$height $tmpbg -loglevel quiet
 }
 
 function dim_image()
@@ -45,14 +49,13 @@ function process_image()
     # $1: The image to blur.
     # $2: Should the image be blurred.
     blur_ratio="0:0"
-    if [ "$2" == "blur" ]; then blur_ratio="5:7"; fi
+    if [ "$2" == "blur" ]; then blur_ratio="5:5"; fi
     
     scale_image $1
     ffmpeg \
         -i $tmpbg -video_size $RESOLUTION -y -i $logo \
         -filter_complex "boxblur=$blur_ratio,overlay=(main_w-overlay_w)/2:(main_h-overlay_h)/2" \
-        -vframes 1 $tmpbg \
-        -loglevel quiet
+        -vframes 1 $tmpbg
 }
 
 function scrot()
@@ -98,7 +101,7 @@ function set_wallpaper()
     # We might blur it later depending on user's decision.
     if [ "$1" != "$tmpbg" ]; then cp $1 $tmpbg; fi
     if [ "$2" == "blur" ]; then process_image $tmpbg blur; fi
-    feh --bg-fill $tmpbg
+    feh --bg-scale $tmpbg --no-fehbg
 }
 
 function lock()
@@ -221,7 +224,12 @@ case "$1" in
         lock $tmpbg
         ;;
         
-    --clear-cache)
+    -u | --update)
+        xrdb -merge ~/.Xresources 2>/dev/null
+        echo "X resources database has been updated."
+        ;;
+        
+    -c | --clear-cache)
         clear_cache
         echo "The lockscreen cache has been cleared."
         ;;
