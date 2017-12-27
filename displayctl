@@ -14,7 +14,7 @@ BRIGHTNESS=`xrdb_get_record Display.brightness`
 WALLPAPER=`xrdb_get_record Display.wallpaper`
 LOCKSCREEN=`xrdb_get_record Display.lockscreen`
 
-logo=./res/logo.png
+logo=./res/blank.png
 tmpbg=/tmp/bg.png
 
 
