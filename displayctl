@@ -5,17 +5,17 @@
 
 # Include ~/.functions to use xrdb_get_record().
 # We use xrdb_get_record() to query xrdb and get the specified record.
-source ~/.functions
+source ~/.config/zsh/functions
 
 OUTPUT=`xrdb_get_record Display.monitor`
+DPI=`xrdb_get_record Display.dpi`
 RESOLUTION=`xrdb_get_record Display.resolution`
 BRIGHTNESS=`xrdb_get_record Display.brightness`
 
 WALLPAPER=`xrdb_get_record Display.wallpaper`
 LOCKSCREEN=`xrdb_get_record Display.lockscreen`
 
-logo=./res/blank.png
-tmpbg=/tmp/bg.png
+tmpbg=/tmp/lock.png
 
 
 function print_usage()
@@ -32,8 +32,8 @@ function print_usage()
 function scale_image()
 {
     # $1: The image to scale to your screen resolution.
-    width=`echo $RESOLUTION | cut -d "x" -f 1`
-    height=`echo $RESOLUTION | cut -d "x" -f 2`
+    width=`echo $RESOLUTION | sed s/_60// | cut -d "x" -f 1`
+    height=`echo $RESOLUTION | sed s/_60// | cut -d "x" -f 2`
 
     ffmpeg -i $1 -y -vf scale=$width:$height $tmpbg -loglevel quiet
 }
@@ -54,7 +54,7 @@ function process_image()
     
     scale_image $1
     ffmpeg \
-        -i $tmpbg -video_size $RESOLUTION -y -i $logo \
+        -i $tmpbg -video_size `echo $RESOLUTION | sed s/_60//` -y \
         -filter_complex "boxblur=$blur_ratio,overlay=(main_w-overlay_w)/2:(main_h-overlay_h)/2" \
         -vframes 1 $tmpbg \
         -loglevel quiet
@@ -64,7 +64,7 @@ function scrot()
 {
     # $1: Where the screenshot will be saved to.
     ffmpeg \
-        -f x11grab -video_size $RESOLUTION -y -i $DISPLAY \
+        -f x11grab -video_size `echo $RESOLUTION | sed s/_60//` -y -i $DISPLAY \
         -vframes 1 $1 \
         -loglevel quiet
 }
@@ -92,9 +92,9 @@ function clear_cache()
 function set_display()
 {
     # Set the size of the outputs for current screen.
-    xrandr 1>/dev/null && xrandr --output $OUTPUT --mode $RESOLUTION
+    xrandr 1>/dev/null && xrandr --output $OUTPUT --mode $RESOLUTION --dpi $DPI
     # Adjust backlight brightness.
-    xbacklight -set $BRIGHTNESS
+    light -S $BRIGHTNESS
 }
 
 function set_wallpaper()
@@ -124,8 +124,9 @@ function lock()
 	--keyhlcolor=$letterEnteredColor --bshlcolor=$letterRemovedColor --separatorcolor=$background \
 	--insidevercolor=$passwordCorrect --insidewrongcolor=$passwordIncorrect \
 	--ringvercolor=$foreground --ringwrongcolor=$foreground --indpos="x+280:h-70" \
-	--radius=15 --ring-width=8 --veriftext="" --wrongtext="" \
-	--textcolor="$foreground" --timecolor="$foreground" --datecolor="$foreground"
+	--radius=15 --ring-width=7 --veriftext="" --wrongtext="" \
+	--timecolor="$foreground" --datecolor="$foreground" \
+        --debug
 }
 
 
