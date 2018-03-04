@@ -3,10 +3,6 @@
 #
 # Personal script for setting resolution and wallpaper.
 
-# Include ~/.functions to use xrdb_get_record().
-# We use xrdb_get_record() to query xrdb and get the specified record.
-source ~/.config/zsh/functions 
-
 OUTPUT=`xrdb_get_record Display.monitor`
 DPI=`xrdb_get_record Display.dpi`
 RESOLUTION=`xrdb_get_record Display.resolution`
@@ -28,6 +24,13 @@ function print_usage()
     echo "-u --update       - Update X resources database."
     echo "-c --clear-cache  - Clear previous lockscreen cache."
 }
+
+# Use xrdb_get_record() to query xrdb and get the specified record.
+function xrdb_get_record()
+{
+    xrdb -query | grep -i "$1" | cut -d ":" -f 2 | sed -e 's/^[ \t]*//'
+}
+
 
 function scale_image()
 {

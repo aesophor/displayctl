@@ -1,38 +1,35 @@
 # displayctl
-A handy utility to handle various works related to the display.
- 
-This script is written with the intention of **dealing with display resolution, brightness, wallpaper, and lockscreen using just a single utility**. You may apply several effects (e.g., blur, dim, or both...etc) to your wallpaper and lockscreen. It provides a caching mechanism to let you lock your screen faster. 
- 
+Set resolution, brightness, desktop wallpaper, and lockscreen wallpaper using a single tool, with various image effect.
+
+Your desktop/lockscreen wallpaper path **no longer scatters across numerous scripts**.
+
+Example configs are provided under `examples/`.
+
+* Example usage:
 ![example](/assets/example.png)
  
-The configuration of displayctl (like the path to your daily wallpaper, default display resolution, default screen brightness...etc) are stored in the X resource database, so that **these values can be managed within a single file**, instead of being scattered across numerous scripts/configs.
- 
+* Configuration file:
 ![config](/assets/config.png)
  
  
-## What It Does 
+## Overview
 * Set display resolution and brightness.
  
 * Set desktop wallpaper / lockscreen with the following effects:
-  * regular
-  * blur
-  * dim
-  * blur + dim
+  * regular / blur / dim / blur+dim
   * blurry screenshot (for lockscreen only)
  
 * Caching - to make lockscreen faster.
   * **displayctl uses the cache for lockscreen automatically (if exists)**
   * the cache is at /tmp/bg.png
-  * use **displayctl --clear-cache** or simply **displayctl** if you want to apply new effects
- 
+  * use `displayctl --clear-cache` before applying new effects (or simply `displayctl`).
+
+## Advantages
 * Now everything related to the display can be managed within a single file (~/.Xresources).
+
+* The path to the desktop wallpaper / lockscreen wallpaper **no longer scatters across numerous scripts**.
  
-* Sometimes when I quit games like Skyrim, the resolution did not revert back correctly, and I have to run xrandr...
- 
-But now I only need to type
-```
-displayctl
-```
+* Sometimes when I quit a game, the resolution did not revert back correctly, and I have to run xrandr, but now I only need to type `displayctl`, 
 and then the resolution will go back to the original.
 
 
@@ -41,7 +38,7 @@ and then the resolution will go back to the original.
  
 ![blur](/assets/blur.png)
  
-![scrot](/assets/scrot.pn)
+![scrot](/assets/scrot.png)
  
 
 ## Dependencies
@@ -55,62 +52,38 @@ and then the resolution will go back to the original.
  
  
 ## Manual Installation
-### Getting the script.
- 
-either git clone this repo and take the script, or...
+#### Getting the script. 
+git clone this repo and take the script, or...
 ```
 git clone https://github.com/aesophor/displayctl
 ```
- 
-download the script directly with wget.
-```
-wget https://raw.githubusercontent.com/aesophor/displayctl/master/displayctl
-chmod +x displayctl
-```
- 
-***
-### Preparing configuration files.
- 
+
+### Preparing configuration files. 
 copy displayctlrc to ~/.x
 ```
 cp displayctlrc ~/.x/.
 ```
  
- 
 And we have to **include ~/.x/displayctlrc in .Xresources** (or .Xdefaults, which depends on your setting).
- 
 ```
 ! displayctl configuration file
-#include "/home/<username>/.x/displayctlrc"
+#include "/home/aesophor/.x/displayctlrc"
 ```
  
+Modify .displayctlrc according to your needs. Use xrandr to find your display monitor and resolution.
 It should look something like this...
+![configs](/assets/configs.png)
 
-![configs](/scrot/configs.png)
 
-**[IMPORTANT]** Replace <username> with your own username.
- 
-Modify .displayctlrc according to your needs.
-Use xrandr to find your display monitor and resolution.
- 
 
-***
 ### Reload .Xresources
- 
 Also you may need to reload your .Xresources. Type this in terminal.
 ```
 xrdb -merge ~/.Xresources
 ```
  
- 
-Finally, put .functions in your home directory. This file contains an important function to get your own configuration of displayctl from the X resource database.
-Also make sure to include the following line in your .zshrc (or whatever shell config that you are using). This script needs it!
-```
-source ~/.functions
-```
+Then you may start using `displayctl`
 
-Then you may logout current X session, restart X, and enjoy!
- 
 ## Usage
 Some examples
 * Set display resolution and wallpaper upon X server starts
