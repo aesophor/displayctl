@@ -126,4 +126,4 @@ displayctl -h
 
 
 ## License
-Available under the [MIT License](https://www.github.com/aesophor/displayctl/LICENSE).
+Available under the [MIT License](https://github.com/aesophor/displayctl/blob/master/LICENSE).
