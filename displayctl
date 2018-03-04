@@ -5,7 +5,7 @@
 
 # Include ~/.functions to use xrdb_get_record().
 # We use xrdb_get_record() to query xrdb and get the specified record.
-source ~/.config/zsh/functions
+source ~/.config/zsh/functions 
 
 OUTPUT=`xrdb_get_record Display.monitor`
 DPI=`xrdb_get_record Display.dpi`
@@ -215,7 +215,7 @@ case "$1" in
                             ;;
                     esac
                     ;;
-                    
+
                 -s | --scrot)
                     scrot $tmpbg
                     process_image $tmpbg blur
@@ -226,7 +226,7 @@ case "$1" in
         fi
         lock $tmpbg
         ;;
-        
+
     -u | --update)
         xrdb -merge ~/.Xresources 2>/dev/null
         echo "X resources database has been updated."
