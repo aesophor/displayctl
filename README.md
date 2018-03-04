@@ -3,11 +3,11 @@ A handy utility to handle various works related to the display.
  
 This script is written with the intention of **dealing with display resolution, brightness, wallpaper, and lockscreen using just a single utility**. You may apply several effects (e.g., blur, dim, or both...etc) to your wallpaper and lockscreen. It provides a caching mechanism to let you lock your screen faster. 
  
-![example](/scrot/example.png)
+![example](/assets/example.png)
  
 The configuration of displayctl (like the path to your daily wallpaper, default display resolution, default screen brightness...etc) are stored in the X resource database, so that **these values can be managed within a single file**, instead of being scattered across numerous scripts/configs.
  
-![config](/scrot/config.png)
+![config](/assets/config.png)
  
  
 ## What It Does 
@@ -37,11 +37,11 @@ and then the resolution will go back to the original.
 
 
 ## Screenshots
-![dim](/scrot/dim.png)
+![dim](/assets/dim.png)
  
-![blur](/scrot/blur.png)
+![blur](/assets/blur.png)
  
-![scrot](/scrot/scrot.png)
+![scrot](/assets/scrot.pn)
  
 
 ## Dependencies
