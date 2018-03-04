@@ -6,9 +6,11 @@ Your desktop/lockscreen wallpaper path **no longer scatters across numerous scri
 Example configs are provided under `examples/`.
 
 * Example usage:
+
 ![example](/assets/example.png)
  
 * Configuration file:
+
 ![config](/assets/config.png)
  
  
@@ -72,6 +74,7 @@ And we have to **include ~/.x/displayctlrc in .Xresources** (or .Xdefaults, whic
  
 Modify .displayctlrc according to your needs. Use xrandr to find your display monitor and resolution.
 It should look something like this...
+
 ![configs](/assets/configs.png)
 
 
