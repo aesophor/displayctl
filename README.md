@@ -121,5 +121,9 @@ displayctl -h
 ```
  
 
-## TODOS
+## Todo
 - [x] separated desktop wallpaper and lockscreen wallpaper.
+
+
+## License
+Available under the [MIT License](https://www.github.com/aesophor/displayctl/LICENSE).
