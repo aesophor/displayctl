@@ -7,9 +7,9 @@
 </div>
 
 ## Why Do I Need This?
-Are you running a Window Manager without a DE? Ever experienced the inconvenience of running `xrandr` to set resolution, `feh` for wallpaper, `light` for brightness, and `i3lock` for lockscreen (I use these tools, in my case).
+Are you running a Window Manager without a DE? Ever experienced the inconvenience of running `xrandr` to set resolution, `feh` for wallpaper, `light` for brightness, and `i3lock` for lockscreen? (I use these tools, in my case)
 
-I wrote displayctl to eradicate these problems. Now you can handles these tasks with a single script!
+I wrote displayctl to eradicate these problems. Now you can handle these tasks with a single script!
 
 ## Dependencies
 * imagemagick
@@ -19,7 +19,7 @@ I wrote displayctl to eradicate these problems. Now you can handles these tasks 
 * [i3lock-color](https://github.com/PandorasFox/i3lock-color)
 
 ## Installation
-It supports manual installation only for now, sorry! Supports for common distributions will be added later!
+Currently it only supports manual installation, sorry! Supports for several common distributions will be added later!
 * Manual Installation
 ```
 $ git clone https://github.com/aesophor/displayctl.git
