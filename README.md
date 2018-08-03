@@ -1,6 +1,6 @@
 <div align="center">
 <h3>DISPLAYCTL</h3>
-<img src="https://github.com/aesophor/displayctl/raw/master/assets/dim.png">
+<img src="https://github.com/aesophor/displayctl/raw/master/assets/main.png">
 
 `Wallpapers (Desktop/Lockscreen) with Effects (Normal/Dim/Blur)`
 `Resolution` `Brightness` `Lockscreen` 
