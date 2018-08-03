@@ -1,7 +1,13 @@
 #!/usr/bin/env bash
 # displayctl
 #
-# Personal script for setting resolution and wallpaper.
+# Resolution / wallpapers management made simple.
+
+# Use xrdb_get_record() to query xrdb and get the specified record.
+function xrdb_get_record()
+{
+    xrdb -query | grep -i "$1" | cut -d ":" -f 2 | sed -e 's/^[ \t]*//'
+}
 
 OUTPUT=`xrdb_get_record Display.monitor`
 DPI=`xrdb_get_record Display.dpi`
@@ -11,69 +17,67 @@ BRIGHTNESS=`xrdb_get_record Display.brightness`
 WALLPAPER=`xrdb_get_record Display.wallpaper`
 LOCKSCREEN=`xrdb_get_record Display.lockscreen`
 
-tmpbg=/tmp/lock.png
+wall_cache=/tmp/wall.png
+lock_cache=/tmp/lock.png
 
 
-function print_usage()
-{
+function print_usage {
+    echo ""
     echo "Usage: $0 <argument>"
-    echo "-d --display      - Set the screen size and brightness."
-    echo "-w --wall         - Set the desktop wallpaper."
-    echo "-l --lock         - Lock the screen."
-    echo "-h --help         - Display this message."
-    echo "-u --update       - Update X resources database."
-    echo "-c --clear-cache  - Clear previous lockscreen cache."
+    echo "-d --display                 - Sets the screen size and brightness."
+    echo "-e --external <resolution>   - Mirrors the screen to an external monitor."
+    echo ""
+    echo "-w --wall                    - Sets the desktop wallpaper."
+    echo "-l --lock                    - Locks the screen (i3lock)."
+    echo ""
+    echo "-c --clear-cache             - Clears previous lockscreen cache."
+    echo "-h --help                    - Displays help message."
+    echo "-v --version                 - Displays version info."
+    echo ""
+    echo "Note: requires imagemagick, ffmpeg, i3lock-color, light, xrandr as dependencies."
 }
 
-# Use xrdb_get_record() to query xrdb and get the specified record.
-function xrdb_get_record()
-{
-    xrdb -query | grep -i "$1" | cut -d ":" -f 2 | sed -e 's/^[ \t]*//'
+function print_version {
+    echo "displayctl 0.2 (beta)"
+    echo "Copyright (C) 2018 Marco Wang"
+    echo "" 
+    echo "This is free software, see the source for copying conditions.  There is NO"
+    echo "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE"
 }
 
 
-function scale_image()
-{
-    # $1: The image to scale to your screen resolution.
-    width=`echo $RESOLUTION | sed s/_60// | cut -d "x" -f 1`
-    height=`echo $RESOLUTION | sed s/_60// | cut -d "x" -f 2`
-
-    ffmpeg -i $1 -y -vf scale=$width:$height $tmpbg -loglevel quiet
+# Sets the resolution for current screen based on value in config.
+function set_resolution {
+    xrandr 1>/dev/null && xrandr --output $OUTPUT --mode $RESOLUTION --dpi $DPI    
 }
 
-function dim_image()
-{
-    # $1: The image to apply dim effect to.
-    scale_image $1
-    convert $tmpbg -fill black -colorize 35% $tmpbg
+# Adjusts screen brightness based on value in config.
+function set_brightness {
+    light -S $BRIGHTNESS
 }
 
-function process_image()
-{
-    # $1: The image to blur.
-    # $2: Should the image be blurred.
-    blur_ratio="0:0"
-    if [ "$2" == "blur" ]; then blur_ratio="5:5"; fi
-    
-    scale_image $1
-    ffmpeg \
-        -i $tmpbg -video_size `echo $RESOLUTION | sed s/_60//` -y \
-        -filter_complex "boxblur=$blur_ratio,overlay=(main_w-overlay_w)/2:(main_h-overlay_h)/2" \
-        -vframes 1 $tmpbg \
-        -loglevel quiet
+# Sets the image at $cache as wallpaper.
+function set_wallpaper {
+    feh --bg-scale $1 --no-fehbg
 }
 
-function scrot()
-{
-    # $1: Where the screenshot will be saved to.
-    ffmpeg \
-        -f x11grab -video_size `echo $RESOLUTION | sed s/_60//` -y -i $DISPLAY \
-        -vframes 1 $1 \
-        -loglevel quiet
+# Scales wallpaper cache to your screen resolution.
+function scale_image {
+    convert $1 -resize $RESOLUTION! $1
 }
 
-function draw_rectangle()
-{
+# Applies dim effect to wallpaper cache.
+function dim_image {
+    convert $1 -fill black -colorize 35% $1
+}
+
+# Applies blur effect to wallpaper cache.
+function blur_image {
+    convert $1 -blur 0x18 $1
+}
+
+# Draws a rectangle on lockscreen.
+function draw_rectangle {
     # $1: The image to draw an rectangle on.
     rectangles=" "
     SR=$(xrandr --query | grep ' connected' | grep -o '[0-9][0-9]*x[0-9][0-9]*[^ ]*')
@@ -81,36 +85,13 @@ function draw_rectangle()
         SRA=(${RES//[x+]/ })
         CX=$((${SRA[2]} + 25))
         CY=$((${SRA[1]} - 30))
-        rectangles+="rectangle $CX,$CY $((CX+300)),$((CY-80)) "
+        rectangles+="rectangle $CX,$CY $((CX+325)),$((CY-100)) "
     done
     convert $1 -draw "fill black fill-opacity 0.6 $rectangles" $1
 }
 
-
-function clear_cache()
-{
-    if [ -f $tmpbg ]; then rm $tmpbg; fi
-}
-
-function set_display()
-{
-    # Set the size of the outputs for current screen.
-    xrandr 1>/dev/null && xrandr --output $OUTPUT --mode $RESOLUTION --dpi $DPI
-    # Adjust backlight brightness.
-    light -S $BRIGHTNESS
-}
-
-function set_wallpaper()
-{
-    # Copy wallpaper to a temporary location.
-    # We might blur it later depending on user's decision.
-    if [ "$1" != "$tmpbg" ]; then cp $1 $tmpbg; fi
-    if [ "$2" == "blur" ]; then process_image $tmpbg blur; fi
-    feh --bg-scale $tmpbg --no-fehbg
-}
-
-function lock()
-{
+# Invokes i3lock.
+function lock {
     # $1: Lockscreen image path
     letterEnteredColor=ba5e5fff
     letterRemovedColor=ba5e5fff
@@ -118,129 +99,187 @@ function lock()
     passwordIncorrect=ba5e5fff
     background=00000000
     foreground=ffffffff
-    i3lock \
+    LD_PRELOAD=/usr/lib/gcc/x86_64-pc-linux-gnu/7.3.0/libasan.so.4 i3lock \
 	-n -i "$1" \
-	--timepos="x-90:h-ch+30" \
-	--datepos="tx+24:ty+25" \
+        --timepos="x+105:h-70" \
+        --datepos="x+130:h-45" \
 	--clock --datestr "Type password to unlock..." \
 	--insidecolor=$background --ringcolor=$foreground --line-uses-inside \
 	--keyhlcolor=$letterEnteredColor --bshlcolor=$letterRemovedColor --separatorcolor=$background \
 	--insidevercolor=$passwordCorrect --insidewrongcolor=$passwordIncorrect \
-	--ringvercolor=$foreground --ringwrongcolor=$foreground --indpos="x+280:h-70" \
-	--radius=15 --ring-width=7 --veriftext="" --wrongtext="" \
-	--timecolor="$foreground" --datecolor="$foreground" \
-        --debug
+	--ringvercolor=$foreground --ringwrongcolor=$foreground --indpos="x+260:h-70" \
+	--radius=17 --ring-width=9 --veriftext="" --wrongtext="" \
+	--timecolor="$foreground" --datecolor="$foreground"
+}
+
+# Clears image cache.
+function clear_lock_cache {
+    if [ -f $lock_cache ]; then rm $lock_cache; fi
 }
 
 
 case "$1" in
     "")
-        # Backup previous image cache, and restore it later.
-        set_display
-        set_wallpaper $WALLPAPER
-        rm $tmpbg
+        set_resolution
+        set_brightness
+        
+        cp $WALLPAPER $wall_cache
+        scale_image $wall_cache
+        set_wallpaper $wall_cache
         ;;
         
     -d | --display)
-        set_display
+        set_resolution
+        set_brightness
         ;;
         
     -w | --wall)
-        # Backup previous image cache, and restore it later.
-        if [ -f $tmpbg ]; then cp $tmpbg $tmpbg.old; fi
+        # Create cache of user's wallpaper and scale it to user's resolution.
+        cp $WALLPAPER $wall_cache
+        scale_image $wall_cache
         
+        # Process the cache.
+        # Apply dim/blur effect based on user's decision.
         case "$2" in
             "")
-                set_wallpaper $WALLPAPER
                 ;;
                 
             -b | --blur)
+                blur_image $wall_cache
+                
                 case "$3" in
                     "")
-                        set_wallpaper $WALLPAPER blur
                         ;;
                     -d | --dim)
-                        dim_image $WALLPAPER
-                        set_wallpaper $tmpbg blur
+                        dim_image $wall_cache
+                        ;;
+                    *)
+                        echo "No such option: $3"
+                        print_usage
                         ;;
                 esac
                 ;;
                 
             -d | --dim)
+                dim_image $wall_cache
+                
                 case "$3" in
                     "")
-                        dim_image $WALLPAPER
-                        set_wallpaper $tmpbg
                         ;;
                     -b | --blur)
-                        dim_image $WALLPAPER
-                        set_wallpaper $tmpbg blur
+                        blur_image $wall_cache
+                        ;;
+                    *)
+                        echo "No such option: $3"
+                        print_usage
                         ;;
                 esac
                 ;;
+                
+            *)
+                echo "No such option: $2"
+                print_usage
+                ;;
         esac
         
-        # Restore previous image cache.
-        if [ -f $tmpbg.old ]; then rm $tmpbg; mv $tmpbg.old $tmpbg; fi
+        set_wallpaper $wall_cache
         ;;
         
     -l | --lock)
-        if [ -f $tmpbg ] && [ "$2" != "-s" ] && [ "$2" != "--scrot" ]; then
+        if [ -f $lock_cache ]; then
             echo "Using previous lockscreen cache."
             echo "Run displayctl --clear-cache before applying new effects to your lockscreen."
         else
             echo -n "Generating lockscreen cache, please wait... "
+            cp $LOCKSCREEN $lock_cache
+            scale_image $lock_cache
+            
             case "$2" in
                 "")
-                    process_image $LOCKSCREEN
                     ;;
                     
                 -b | --blur)
+                    blur_image $lock_cache
+                    
                     case "$3" in
                         "")
-                            process_image $LOCKSCREEN blur
                             ;;
                         -d | --dim)
-                            process_image $LOCKSCREEN blur
-                            dim_image $tmpbg
+                            dim_image $lock_cache
+                            ;;
+                        *)
+                            echo "No such option: $3"
+                            print_usage
                             ;;
                     esac
                     ;;
                     
                 -d | --dim)
+                    dim_image $lock_cache
+                    
                     case "$3" in
                         "")
-                            dim_image $LOCKSCREEN
                             ;;
                         -b | --blur)
-                            dim_image $LOCKSCREEN
-                            process_image $tmpbg blur
+                            blur_image $lock_cache
+                            ;;
+                        *)
+                            echo "No such option: $3"
+                            print_usage
                             ;;
                     esac
                     ;;
-
-                -s | --scrot)
-                    scrot $tmpbg
-                    process_image $tmpbg blur
+                    
+                *)
+                    echo "No such option: $2"
+                    print_usage
                     ;;
             esac
+            
+            draw_rectangle $lock_cache
             echo "[Complete]"
-            draw_rectangle $tmpbg
         fi
-        lock $tmpbg
-        ;;
-
-    -u | --update)
-        xrdb -merge ~/.Xresources 2>/dev/null
-        echo "X resources database has been updated."
+        
+        lock $lock_cache
         ;;
         
-    -c | --clear-cache)
-        clear_cache
+    -e | --external) 
+        case "$2" in
+            "")
+                echo "Please provide a resolution for external display."
+                print_usage
+                ;;
+                
+            *)
+                # Regex check. $2 should be something like 1680x1050.
+                if [[ $2 =~ ^[0-9]{,4}x[0-9]{,4}$ ]]; then
+                    echo -n "Mirroring display to external monitor, please wait... "
+                    xrandr --output $OUTPUT --mode $2
+                    xrandr --addmode DP1 $2
+                    xrandr --output DP1 --mode $2 --same-as $OUTPUT
+                    echo "[Complete]"
+                else
+                    echo "The resolution should be something like: 1680x1050"
+                    print_usage
+                fi
+                ;;
+        esac
+        ;;
+        
+    -c | --clear-lock-cache)
+        clear_lock_cache
         echo "The lockscreen cache has been cleared."
         ;;
         
     -h | --help)
+        print_usage
+        ;;
+        
+    -v | --version)
+        print_version
+        ;;
+        
+    *)
         print_usage
         ;;
 esac
