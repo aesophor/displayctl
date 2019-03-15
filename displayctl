@@ -4,8 +4,7 @@
 # Resolution / wallpapers management made simple.
 
 # Use xrdb_get_record() to query xrdb and get the specified record.
-function xrdb_get_record()
-{
+function xrdb_get_record() {
     xrdb -query | grep -i "$1" | cut -d ":" -f 2 | sed -e 's/^[ \t]*//'
 }
 
