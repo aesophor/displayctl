@@ -43,7 +43,7 @@ function print_version {
     echo "" 
     echo "This is free software, see the source for copying conditions.  There is NO"
     echo "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE"
-}
+} 
 
 
 # Sets the resolution for current screen based on value in config.
@@ -58,7 +58,7 @@ function set_brightness {
 
 # Sets the image at $cache as wallpaper.
 function set_wallpaper {
-    feh --bg-scale $1 --no-fehbg
+    feh --bg-tile $1 --no-fehbg
 }
 
 # Scales wallpaper cache to your screen resolution.
@@ -252,11 +252,11 @@ case "$1" in
                 
             *)
                 # Regex check. $2 should be something like 1680x1050.
-                if [[ $2 =~ ^[0-9]{,4}x[0-9]{,4}$ ]]; then
+                if [[ $3 =~ ^[0-9]{,4}x[0-9]{,4}$ ]]; then
                     echo -n "Mirroring display to external monitor, please wait... "
-                    xrandr --output $OUTPUT --mode $2
-                    xrandr --addmode DP1 $2
-                    xrandr --output DP1 --mode $2 --same-as $OUTPUT
+                    xrandr --output $OUTPUT --mode $3
+                    xrandr --addmode $2 $3
+                    xrandr --output $2 --mode $3 --same-as $OUTPUT
                     echo "[Complete]"
                 else
                     echo "The resolution should be something like: 1680x1050"
