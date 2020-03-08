@@ -45,6 +45,11 @@ Display.wallpaper:       /home/aesophor/Pictures/Wallpapers/Nature/Rainy.jpeg
 Display.lockscreen:      /home/aesophor/Pictures/Wallpapers/Landscape/Pebble.jpeg
 ```
 
+Each time after modifying displayctlrc, run
+```
+xrdb -merge ~/.Xresources
+```
+
 ## Usage
 Lockscreen cache can be located at `/tmp/lock_cache.png`. It will be stored there for faster lockscreen invocation. 
 
